@@ -1,0 +1,26 @@
+body {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+.icons button{
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.icons button:hover{
+    color: blue;
+}
