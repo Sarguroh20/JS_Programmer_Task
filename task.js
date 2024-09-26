@@ -1,249 +1,276 @@
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', ()=>{
     fetch("data.json")
+
+        .then(response => response.json())
+
+        .then(function (data) {
+            let tableRows = document.getElementById('tableRows')
+            let form = document.getElementById('mymodal')
+            let idInput = document.getElementById('idInput')
+            let nameInput = document.getElementById('nameInput')
+            let vendorInput = document.getElementById('vendorInput')
+            let densityInput = document.getElementById('densityInput')
+            let viscosityInput = document.getElementById('viscosityInput')
+            let packagingInput = document.getElementById('packagingInput')
+            let packSizeInput = document.getElementById('packSizeInput')
+            let unitInput = document.getElementById('unitInput')
+            let quantityInput = document.getElementById('quantityInput')
+            // const rows = document.querySelectorAll("#tableRows tr")
+            const moveUpButton = document.getElementById("moveUp")
+            const moveDownButton = document.getElementById("moveDown")
+            const deleteButton = document.getElementById('deleteRow')
+            
+            if (!localStorage.getItem("fetchedData")) {
+                localStorage.setItem("fetchedData", JSON.stringify(data));
+            }
+            let fetchedData = JSON.parse(localStorage.getItem('fetchedData')) || [];
+            let userData = JSON.parse(localStorage.getItem('userData')) || [];
+
+            let displayData = () => {
+                tableRows.innerHTML = "";
+
+            // for(let i = 0; i < data.length; i++) {
+            //     const rowData = `<tr>
+            //     <td><input type="checkbox" class="rowCheckbox"></td>
+            //     <td>${data[i].id}</td>
+            //     <td>${data[i].Chemical_name}</td>
+            //     <td>${data[i].Vendor}</td>
+            //     <td>${data[i].Density}</td>
+            //     <td>${data[i].Viscosity}</td>
+            //     <td>${data[i].Packaging}</td>
+            //     <td>${data[i].Pack_size}</td>
+            //     <td>${data[i].Unit}</td>
+            //     <td>${data[i].Quantity}</td>
+            //     </tr>`;
+            //     tableRows.innerHTML += rowData;
+            // }            
+
+                fetchedData.forEach((item, index) => {
+                    const rowData = `<tr>
+                        <td><input type="checkbox" class="rowCheckbox"></td>
+                        <td>${item.id}</td>
+                        <td>${item.Chemical_name}</td>
+                        <td>${item.Vendor}</td>
+                        <td>${item.Density}</td>
+                        <td>${item.Viscosity}</td>
+                        <td>${item.Packaging}</td>
+                        <td>${item.Pack_size}</td>
+                        <td>${item.Unit}</td>
+                        <td>${item.Quantity}</td>
+                    </tr>`;
+                    tableRows.innerHTML += rowData;
+                });            
+
+                userData.forEach((item, index) => {
+                    const rowData = `<tr>
+                        <td><input type="checkbox" class="rowCheckbox"></td>
+                        <td>${item.id}</td>
+                        <td>${item.name}</td>
+                        <td>${item.vendor}</td>
+                        <td>${item.density}</td>
+                        <td>${item.viscosity}</td>
+                        <td>${item.packaging}</td>
+                        <td>${item.size}</td>
+                        <td>${item.unit}</td>
+                        <td>${item.quantity}</td>
+                    </tr>`;
+                    tableRows.innerHTML += rowData;
+                });
+            }
+
+            displayData();
+
+            tableRows.addEventListener('click', function (e) {
+                if (e.target.tagName === "TR" || e.target.tagName === "TD") {
+                    // If the user clicks on the row or a table cell, find the checkbox in the row
+                    const checkbox = e.target.closest('tr').querySelector(".rowCheckbox");
+                    if (checkbox) {
+                        checkbox.checked = !checkbox.checked;
+                    }
+                }
+            });
+
+            // form.addEventListener("submit", (e) => {
+            //     e.preventDefault();
+            //     acceptData();
+            // })
+
+            // let dataInputs = [];
+            // let acceptData = () => {
+            //     dataInputs.push({
+            //         "id": idInput.value,
+            //         "name" : nameInput.value,
+            //         "vendor" : vendorInput.value,
+            //         "density" : densityInput.value,
+            //         "viscosity" : viscosityInput.value,
+            //         "packaging" : packagingInput.value,
+            //         "size" : packSizeInput.value,
+            //         "unit" : unitInput.value,
+            //         "quantity" : quantityInput.value,
+                    
+            //     });
+            //     localStorage.setItem('dataInputs', JSON.stringify(dataInputs));
+            //     console.log(dataInputs);
+            //     addValue();
+            // }
+
+            // let addValue = () => {
+            //     tableRows.innerHTML = "";
+            //     dataInputs.map((x, y)=> {
+            //         return (
+            //             tableRows.innerHTML += `<tr id=${y}>
+            //                                     <td><input type="checkbox" class="rowCheckbox"></td>
+            //                                     <td>${x.id}</td>
+            //                                     <td>${x.name}</td>
+            //                                     <td>${x.vendor}</td>
+            //                                     <td>${x.density}</td>
+            //                                     <td>${x.viscosity}</td>
+            //                                     <td>${x.packaging}</td>
+            //                                     <td>${x.size}</td>
+            //                                     <td>${x.unit}</td>
+            //                                     <td>${x.quantity}</td>
+            //                                     </tr>`
+            //         )
+            //     })
+            //     resetForm();
+            // }
+
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                let newData = {
+                    "id": idInput.value,
+                    "name": nameInput.value,
+                    "vendor": vendorInput.value,
+                    "density": densityInput.value,
+                    "viscosity": viscosityInput.value,
+                    "packaging": packagingInput.value,
+                    "size": packSizeInput.value,
+                    "unit": unitInput.value,
+                    "quantity": quantityInput.value
+                };
+
+                // Add the new user data to the userData array
+                userData.push(newData);
+                localStorage.setItem('userData', JSON.stringify(userData));  // Save updated userData to localStorage
+
+                // Display both sets of data again (fetched + user-added)
+                displayData();
+
+                // Reset form
+                resetForm();
+            });
+
+
+            let resetForm = () => {
+                idInput.value = ""
+                nameInput.value = ""
+                vendorInput.value = ""
+                densityInput.value = ""
+                viscosityInput.value = ""
+                packagingInput.value = ""
+                packSizeInput.value = ""
+                unitInput.value = ""
+                quantityInput.value = ""
+            }
+            
+            // (() => {
+            //     let storedData = JSON.parse(localStorage.getItem("fetchedData"));
+            //     dataInputs = JSON.parse(localStorage.getItem("dataInputs")) || [];
+            //     console.log(dataInputs);
+            //     addValue();
+            // })();
+
+            // rows.forEach((row) => {
+            //     row.addEventListener('click', function (e) {
+            //     if (e.target.type === 'checkbox') return;
+            //         const checkbox = this.querySelector(".rowCheckbox");
+            //         checkbox.checked = !checkbox.checked;
+            //     });
+            // });
     
-    .then(response => response.json())
+            deleteButton.addEventListener('click', () => {
+                const selectedCheckboxes = document.querySelectorAll('.rowCheckbox:checked');
+
+                selectedCheckboxes.forEach(checkbox => {
+                    const row = checkbox.closest('tr');
+                    const rowId = row.querySelector('td:nth-child(2)').textContent; // Get the ID from the second cell
+
+                    // Remove from DOM
+                    row.remove();
+
+                    // Remove from fetchedData or userData based on the source
+                    fetchedData = fetchedData.filter(item => item.id !== rowId);
+                    userData = userData.filter(item => item.id !== rowId);
+
+                    // Update localStorage
+                    localStorage.setItem('fetchedData', JSON.stringify(fetchedData));
+                    localStorage.setItem('userData', JSON.stringify(userData));
+                });
+            });
+
+             // Move Up function
+            moveUpButton.addEventListener('click', function () {
+                moveRow("up");
+            });
     
-    .then(function (data) {
-        let table = document.querySelector("#tableRows")
+            // Move Down function
+            moveDownButton.addEventListener('click', function () {
+                moveRow("down");
+            });
+    
+            // Function to move rows up or down
+            function moveRow(direction) {
+                const selectedRow = document.querySelector(".rowCheckbox:checked");
+                if (!selectedRow) return;  // No row is selected
+    
+                const currentRow = selectedRow.closest('tr');  // Get the current row
+    
+                if (direction === "up" && currentRow.previousElementSibling) {
+                    // Move the row up
+                    currentRow.parentNode.insertBefore(currentRow, currentRow.previousElementSibling);
+                } else if (direction === "down" && currentRow.nextElementSibling) {
+                    // Move the row down
+                    currentRow.parentNode.insertBefore(currentRow.nextElementSibling, currentRow);
+                }
+            }
+        })
         
-        for(let i = 0; i < data.length; i++) {
-            let rowData = `<tr>
-                            <td>${data[i].id}</td>
-                            <td>${data[i].Chemical_name}</td>
-                            <td>${data[i].Vendor}</td>
-                            <td>${data[i].Density}</td>
-                            <td>${data[i].Viscosity}</td>
-                            <td>${data[i].Packaging}</td>
-                            <td>${data[i].Pack_size}</td>
-                            <td>${data[i].Unit}</td>
-                            <td>${data[i].Quantity}</td>
-                        </tr>`;
-            table.innerHTML += rowData;
-        }
-    })
-    
-    .then(data => {
-        $('#example').DataTable({
-            data: data,
-            columns: [
-                { data: 'id' },
-                { data: 'Chemical_name' },
-                { data: 'Vendor' },
-                { data: 'Density' },
-                { data: 'Viscosity' },
-                { data: 'Packaging' },
-                { data: 'Pack_size' },
-                { data: 'Unit' },
-                { data: 'Quantity' },
-            ]
+        .then(() => {
+            const refreshData = document.querySelector("#refresh");
+            // console.log(refreshData);
+            refreshData.addEventListener('click', function refresh(){
+                window.location.reload();
+            })
+        })
+        
+        .then(()=>{
+            const save = document.querySelector('#saveData');
+            console.log(save);
+            
+        })
+
+        // Sort
+        .then(data => {
+            $('#example').DataTable({
+                data: data,
+                responsive: true,
+                columns: [
+                    {
+                        title: '<input type="checkbox" id="selectAll">',           
+                        orderable: false,    
+                        searchable: false,   
+                    },
+                    { data: 'id'},
+                    { data: 'Chemical_name'},
+                    { data: 'Vendor'},
+                    { data: 'Density'},
+                    { data: 'Viscosity'},
+                    { data: 'Packaging'},
+                    { data: 'Pack_size'},
+                    { data: 'Unit'},
+                    { data: 'Quantity'}
+                ]
+            });
         });
-    });
 })
-
-// Sort By Columns
-// let table = document.getElementById('table');
-// let rows = table.querySelector('tbody tr');
-// let rowData = [];
-
-// for (let i = 0; i < rows.length; i++) {
-//     let cells = rows[i].getElementsByTagName('td');
-//     let id = parseInt(cells[0].innerHTML);
-//     let Chemical_name = cells[1].innerHTML;
-//     let Density = parseInt(cells[2].innerHTML);
-//     let Viscosity = parseInt(cells[3].innerHTML);
-//     let Packaging = cells[4].innerHTML;
-//     let Pack_size = parseInt(cells[5].innerHTML);
-//     let Unit = cells[6].innerHTML;
-//     let Quantity = parseInt(cells[7].innerHTML);
-
-//     rowData.push({
-//         id:id,
-//         Chemical_name:Chemical_name,
-//         Density:Density,
-//         Viscosity:Viscosity,
-//         Packaging:Packaging,
-//         Pack_size:Pack_size,
-//         Unit:Unit,
-//         Quantity:Quantity
-
-//     });
-// }
-
-//     let sortDirection = {
-//         id:"asc",
-//         Chemical_name:"asc",
-//         Density:"asc",
-//         Viscosity:"asc",
-//         Packaging:"asc",
-//         Pack_size:"asc",
-//         Unit:"asc",
-//         Quantity:"asc"
-//     }
-
-//     rowData.sort(function(a, b){
-//         return a.price - b.price;
-//     })
-
-//     function updateTable(){
-//         for (let i = 0; i < rowData.length; i++) {
-//             rows[i].getElementsByTagName('td')[0].innerHTML = rowData[i].id;
-//             rows[i].getElementsByTagName('td')[1].innerHTML = rowData[i].Chemical_name;
-//             rows[i].getElementsByTagName('td')[2].innerHTML = rowData[i].Density;
-//             rows[i].getElementsByTagName('td')[3].innerHTML = rowData[i].Viscosity;
-//             rows[i].getElementsByTagName('td')[4].innerHTML = rowData[i].Packaging;
-//             rows[i].getElementsByTagName('td')[5].innerHTML = rowData[i].Pack_size;
-//             rows[i].getElementsByTagName('td')[6].innerHTML = rowData[i].Unit;
-//             rows[i].getElementsByTagName('td')[7].innerHTML = rowData[i].Quantity;
-//         }
-//     }
-
-//     updateTable();
-
-//     let idSortIcon = document.getElementById('id-col').getElementsByTagName("i")[0];
-//     let Chemical_nameSortIcon = document.getElementById('Chemical_name-col').getElementsByTagName("i")[1];
-//     let DensitySortIcon = document.getElementById('Density-col').getElementsByTagName("i")[2];
-//     let ViscositySortIcon = document.getElementById('Viscosity-col').getElementsByTagName("i")[3];
-//     let PackagingSortIcon = document.getElementById('Packaging-col').getElementsByTagName("i")[4];
-//     let Pack_sizeSortIcon = document.getElementById('Pack_size-col').getElementsByTagName("i")[5];
-//     let UnitSortIcon = document.getElementById('Unit-col').getElementsByTagName("i")[6];
-//     let QuantitySortIcon = document.getElementById('Quantity-col').getElementsByTagName("i")[7];
-
-//     idSortIcon.addEventListener('click', function(){
-//         rowData.sort(function(a, b){
-//             if(sortDirection.id === "asc")
-//                 return a.id - b.id;
-//             else
-//                 return b.id - a.id;
-//         });
-
-//         sortDirection.id = (sortDirection.id === "asc") ? "desc":"asc";
-//         updateTable();
-//     });
-
-//     Chemical_nameSortIcon.addEventListener('click', function(){
-//         rowData.sort(function(a, b){
-//             if(sortDirection.Chemical_name === "asc"){
-//                 if(a.Chemical_name < b.Chemical_name) return -1;
-//                 if(a.Chemical_name > b.Chemical_name) return 1;
-
-//                 return 0;
-//             }else{
-//                 if(a.Chemical_name < b.Chemical_name) return 1;
-//                 if(a.Chemical_name > b.Chemical_name) return -1;
-
-//                 return 0;
-//             }
-//         });
-
-//         sortDirection.Chemical_name = (sortDirection.Chemical_name === "asc") ? "desc":"asc";
-//         updateTable();
-
-//     });
-
-//     VendorSortIcon.addEventListener('click', function(){
-//         rowData.sort(function(a, b){
-//             if(sortDirection.Vendor === "asc"){
-//                 if(a.Vendor < b.Vendor) return -1;
-//                 if(a.Vendor > b.Vendor) return 1;
-
-//                 return 0;
-//             }else{
-//                 if(a.Vendor < b.Vendor) return 1;
-//                 if(a.Vendor > b.Vendor) return -1;
-
-//                 return 0;
-//             }
-//         });
-
-//         sortDirection.Vendor = (sortDirection.Vendor === "asc") ? "desc":"asc";
-//         updateTable();
-
-//     });
-
-//     DensitySortIcon.addEventListener('click', function(){
-//         rowData.sort(function(a, b){
-//             if(sortDirection.Density === "asc")
-//                 return a.Density - b.Density;
-//             else
-//                 return b.Density - a.Density;
-//         });
-
-//         sortDirection.Density = (sortDirection.Density === "asc") ? "desc":"asc";
-//         updateTable();
-//     });
-
-//     ViscositySortIcon.addEventListener('click', function(){
-//         rowData.sort(function(a, b){
-//             if(sortDirection.Viscosity === "asc")
-//                 return a.Viscosity - b.Viscosity;
-//             else
-//                 return b.Viscosity - a.Viscosity;
-//         });
-
-//         sortDirection.Viscosity = (sortDirection.Viscosity === "asc") ? "desc":"asc";
-//         updateTable();
-//     });
-
-//     PackagingSortIcon.addEventListener('click', function(){
-//         rowData.sort(function(a, b){
-//             if(sortDirection.Packaging === "asc"){
-//                 if(a.Packaging < b.Packaging) return -1;
-//                 if(a.Packaging > b.Packaging) return 1;
-
-//                 return 0;
-//             }else{
-//                 if(a.Packaging < b.Packaging) return 1;
-//                 if(a.Packaging > b.Packaging) return -1;
-
-//                 return 0;
-//             }
-//         });
-
-//         sortDirection.Packaging = (sortDirection.Packaging === "asc") ? "desc":"asc";
-//         updateTable();
-
-//     });
-
-//     Pack_sizeSortIcon.addEventListener('click', function(){
-//         rowData.sort(function(a, b){
-//             if(sortDirection.Pack_size === "asc")
-//                 return a.Pack_size - b.Pack_size;
-//             else
-//                 return b.Pack_size - a.Pack_size;
-//         });
-
-//         sortDirection.Pack_size = (sortDirection.Pack_size === "asc") ? "desc":"asc";
-//         updateTable();
-//     });
-
-//     UnitSortIcon.addEventListener('click', function(){
-//         rowData.sort(function(a, b){
-//             if(sortDirection.Unit === "asc"){
-//                 if(a.Unit < b.Unit) return -1;
-//                 if(a.Unit > b.Unit) return 1;
-
-//                 return 0;
-//             }else{
-//                 if(a.Unit < b.Unit) return 1;
-//                 if(a.Unit > b.Unit) return -1;
-
-//                 return 0;
-//             }
-//         });
-
-//         sortDirection.Unit = (sortDirection.Unit === "asc") ? "desc":"asc";
-//         updateTable();
-
-//     });
-
-//     QuantitySortIcon.addEventListener('click', function(){
-//         rowData.sort(function(a, b){
-//             if(sortDirection.Quantity === "asc")
-//                 return a.Quantity - b.Quantity;
-//             else
-//                 return b.Quantity - a.Quantity;
-//         });
-
-//         sortDirection.Quantity = (sortDirection.Quantity === "asc") ? "desc":"asc";
-//         updateTable();
-//     });

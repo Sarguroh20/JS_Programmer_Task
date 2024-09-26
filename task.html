@@ -14,28 +14,58 @@
     <div class="header">
         <h1>Chemical Supplies</h1>
         <div class="icons">
-            <button><i class="fa-solid fa-circle-plus" style="color:blue"></i></button>
-            <button><i class="fa-solid fa-arrow-up" style="color:blue"></i></button>
-            <button><i class="fa-solid fa-arrow-down" style="color:blue"></i></button>
-            <button><i class="fa-solid fa-trash" style="color:red"></i></button>
-            <button><i class="fa-solid fa-arrow-rotate-left" style="color:blue"></i></button>
-            <button><i class="fa-regular fa-floppy-disk" style="color:blue"></i></button>
+            <button id="addNewRow" class="btn" data-bs-toggle="modal" data-bs-target="#mymodal">
+                <i class="fa-solid fa-circle-plus" style="color:blue"></i>
+            </button>
+            <button id="moveUp"><i class="fa-solid fa-arrow-up" style="color:blue"></i></button>
+            <button id="moveDown"><i class="fa-solid fa-arrow-down" style="color:blue"></i></button>
+            <button id="deleteRow"><i class="fa-solid fa-trash" style="color:red"></i></button>
+            <button id="refresh"><i class="fa-solid fa-arrow-rotate-left" style="color:blue"></i></button>
+            <button id="saveData"><i class="fa-regular fa-floppy-disk" style="color:blue"></i></button>
         </div>
+
     </div>
+
+    <form class="modal fade" id="mymodal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">New Chemical Supplies</h2>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="number" id="idInput" class="form-control mb-3" placeholder="Enter chemical id " min="1" required>
+                    <input type="text" id="nameInput" name="" class="form-control mb-3" placeholder="Enter chemical name " required>
+                    <input type="text" id="vendorInput" name="" class="form-control mb-3" placeholder="Enter a vendor " required>
+                    <input type="number" id="densityInput" name="" class="form-control mb-3" placeholder="Enter chemical density " required>
+                    <input type="number" id="viscosityInput" name="" class="form-control mb-3" placeholder="Enter chemical viscosity " required>
+                    <input type="text" id="packagingInput" name="" class="form-control mb-3" placeholder="Enter packaging type " required>
+                    <input type="number" id="packSizeInput" name="" class="form-control mb-3" placeholder="Enter pack size " required>
+                    <input type="text" id="unitInput" name="" class="form-control mb-3" placeholder="Enter unit " required>
+                    <input type="number" id="quantityInput" name="" class="form-control mb-3" placeholder="Enter quantity " required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </div>
+        </div>
+    </form>
 
     <div class="table-responsive">
         <table class="table table-bordered table-hover table-sm" id="example">
             <thead class="table-dark">
                 <tr>
-                    <th id="id-col">id</th>
-                    <th id="Chemical_name-col">Chemical name</th>
-                    <th id="Vendor-col">Vendor</th>
-                    <th id="Density-col">Density</th>
-                    <th id="Viscosity-col">Viscosity</th>
-                    <th id="Packaging-col">Packaging</th>
-                    <th id="Pack_size-col">Pack size</th>
-                    <th id="Unit-col">Unit</th>
-                    <th id="Quantity-col">Quantity</th>
+                    <th><input type="checkbox" id="selectAll"></th>
+                    <th>id</th>
+                    <th>Chemical name</th>
+                    <th>Vendor</th>
+                    <th>Density</th>
+                    <th>Viscosity</th>
+                    <th>Packaging</th>
+                    <th>Pack size</th>
+                    <th>Unit</th>
+                    <th>Quantity</th>
                 </tr>
             </thead>
             <tbody id="tableRows">
