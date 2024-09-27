@@ -71,9 +71,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
             let refreshData = () => {
                 const refreshData = document.querySelector("#refresh");
                 // console.log(refreshData);
-                refreshData.addEventListener('click', function refresh(){
                 window.location.reload();
-            })
             }
 
             saveButton.addEventListener('click', function () {
@@ -92,22 +90,20 @@ document.addEventListener('DOMContentLoaded', ()=>{
                         unit: row.querySelector('td:nth-child(9)').textContent.trim(),
                         quantity: row.querySelector('td:nth-child(10)').textContent.trim()
                     };
-
-                    console.log(updatedRow);
-
+                    
                     let indexFetchedData = fetchedData.findIndex(item => item.id === rowId);
                     let indexUserData = userData.findIndex(item => item.id === rowId);
-
+                    
                     if (indexFetchedData !== -1) {
                         fetchedData[indexFetchedData] = updatedRow;
                     } else if (indexUserData !== -1) {
                         userData[indexUserData] = updatedRow;
                     }
                 });
-
+                
                 localStorage.setItem('fetchedData', JSON.stringify(fetchedData));
                 localStorage.setItem('userData', JSON.stringify(userData));
-
+                
                 // displayData();
                 refreshData();
             });
@@ -168,8 +164,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
                     fetchedData = fetchedData.filter(item => item.id !== rowId);
                     userData = userData.filter(item => item.id !== rowId);
-
-                    console.log(rowId);
 
                     localStorage.setItem('fetchedData', JSON.stringify(fetchedData));
                     localStorage.setItem('userData', JSON.stringify(userData));
