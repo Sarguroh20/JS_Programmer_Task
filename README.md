@@ -1,8 +1,5 @@
-<div align="center>
-  
-  ![Screenshot 2024-09-29 002647](https://github.com/user-attachments/assets/311555e6-1e8b-4d17-b475-857a2a1c7388)
-  
-</div>
+![Screenshot 2024-09-29 002647](https://github.com/user-attachments/assets/311555e6-1e8b-4d17-b475-857a2a1c7388)
+
 <table align="center">
 <tr>
 <td align="center">
