@@ -20,7 +20,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
             const moveUpButton = document.getElementById("moveUp")
             const moveDownButton = document.getElementById("moveDown")
             const deleteButton = document.getElementById('deleteRow')
+            const editRow = document.getElementById('editRow')
             const saveButton = document.getElementById('saveData')
+
+            let selectedCheckboxes = document.querySelectorAll('.rowCheckbox:checked');
+            let editingRowId = null;
 
             let fetchedData = JSON.parse(localStorage.getItem('fetchedData')) || [];
             let userData = JSON.parse(localStorage.getItem('userData')) || [];
@@ -36,15 +40,15 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 fetchedData.forEach((item, index) => {
                     const rowData = `<tr data-id="fetched_${index}">
                         <td><input type="checkbox" class="rowCheckbox"></td>
-                        <td>${item.id}</td>
-                        <td>${item.Chemical_name}</td>
-                        <td>${item.Vendor}</td>
-                        <td>${item.Density}</td>
-                        <td>${item.Viscosity}</td>
-                        <td>${item.Packaging}</td>
-                        <td>${item.Pack_size}</td>
-                        <td>${item.Unit}</td>
-                        <td>${item.Quantity}</td>
+                        <td data-cell="Id">${item.id}</td>
+                        <td data-cell="Chemical Name">${item.Chemical_name}</td>
+                        <td data-cell="Vendor">${item.Vendor}</td>
+                        <td data-cell="Density">${item.Density}</td>
+                        <td data-cell="Viscosity">${item.Viscosity}</td>
+                        <td data-cell="Packaging">${item.Packaging}</td>
+                        <td data-cell="Pack Size">${item.Pack_size}</td>
+                        <td data-cell="Unit">${item.Unit}</td>
+                        <td data-cell="Quantity">${item.Quantity}</td>
                     </tr>`;
                     tableRows.innerHTML += rowData;
                 });            
@@ -52,15 +56,15 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 userData.forEach((item, index) => {
                     const rowData = `<tr data-id="user_${index}">
                         <td><input type="checkbox" class="rowCheckbox"></td>
-                        <td>${item.id}</td>
-                        <td>${item.name}</td>
-                        <td>${item.vendor}</td>
-                        <td>${item.density}</td>
-                        <td>${item.viscosity}</td>
-                        <td>${item.packaging}</td>
-                        <td>${item.size}</td>
-                        <td>${item.unit}</td>
-                        <td>${item.quantity}</td>
+                        <td data-cell="Id">${item.id}</td>
+                        <td data-cell="Name">${item.name}</td>
+                        <td data-cell="Vendor">${item.vendor}</td>
+                        <td data-cell="Density">${item.density}</td>
+                        <td data-cell="Viscosity">${item.viscosity}</td>
+                        <td data-cell="Packaging">${item.packaging}</td>
+                        <td data-cell="Pack Size">${item.size}</td>
+                        <td data-cell="Unit">${item.unit}</td>
+                        <td data-cell="Quantity">${item.quantity}</td>
                     </tr>`;
                     tableRows.innerHTML += rowData;
                 });
@@ -74,44 +78,53 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 window.location.reload();
             }
 
-            // saveButton.addEventListener('click', function () {
-            //     const allRows = tableRows.querySelectorAll('tr');
-                
-            //     allRows.forEach(row => {
-            //         const rowId = row.getAttribute('data-id');
-            //         const updatedRow = {
-            //             id: row.querySelector('td:nth-child(2)').textContent.trim(),
-            //             name: row.querySelector('td:nth-child(3)').textContent.trim(),
-            //             vendor: row.querySelector('td:nth-child(4)').textContent.trim(),
-            //             density: row.querySelector('td:nth-child(5)').textContent.trim(),
-            //             viscosity: row.querySelector('td:nth-child(6)').textContent.trim(),
-            //             packaging: row.querySelector('td:nth-child(7)').textContent.trim(),
-            //             size: row.querySelector('td:nth-child(8)').textContent.trim(),
-            //             unit: row.querySelector('td:nth-child(9)').textContent.trim(),
-            //             quantity: row.querySelector('td:nth-child(10)').textContent.trim()
-            //         };
-                    
-            //         if (rowId.startsWith('user_')) {
-            //             // Handle updating userData
-            //             const userIndex = parseInt(rowId.replace('user_', ''));  // Extract the user data index
-            //             console.log(userIndex);
-            //             userData[userIndex] = updatedRow;  // Update userData at the appropriate index
-            //         } else if(rowId.startsWith('fetched_')){
-            //             // Handle updating fetchedData
-            //             const fetchedIndex = parseInt(rowId.replace('fetched_', ''));  // Extract the fetched data index
-            //             console.log(fetchedIndex);
-            //             fetchedData[fetchedIndex] = updatedRow;  // Update fetchedData at the appropriate index
-            //         }
-            //     });
-                
-            //     localStorage.setItem('fetchedData', JSON.stringify(fetchedData));
-            //     localStorage.setItem('userData', JSON.stringify(userData));
+            let saveDataToLocalStorage = () => {
+                localStorage.setItem('fetchedData', JSON.stringify(fetchedData));
+                localStorage.setItem('userData', JSON.stringify(userData));
+                alert("Data saved to Local Storage!");
+            };
 
-            //     alert('Data saved successfully!'); 
+            saveButton.addEventListener('click', saveDataToLocalStorage);
+
+            editRow.addEventListener('click', () => {
+                selectedCheckboxes = document.querySelectorAll('.rowCheckbox:checked'); 
                 
-            //     // displayData();
-            //     // refreshData();
-            // });
+                if (selectedCheckboxes.length !== 1) {
+                    alert("Please select exactly one row to edit.");
+                    return;
+                }
+
+                const selectedRow = selectedCheckboxes[0].closest('tr');
+                editingRowId = selectedRow.getAttribute('data-id');  
+
+                if (editingRowId.startsWith('fetched_')) {
+                    const index = parseInt(editingRowId.replace('fetched_', ''));
+                    const rowData = fetchedData[index];
+
+                    idInput.value = rowData.id;
+                    nameInput.value = rowData.Chemical_name;
+                    vendorInput.value = rowData.Vendor;
+                    densityInput.value = rowData.Density;
+                    viscosityInput.value = rowData.Viscosity;
+                    packagingInput.value = rowData.Packaging;
+                    packSizeInput.value = rowData.Pack_size;
+                    unitInput.value = rowData.Unit;
+                    quantityInput.value = rowData.Quantity;
+                } else if (editingRowId.startsWith('user_')) {
+                    const index = parseInt(editingRowId.replace('user_', ''));
+                    const rowData = userData[index];
+                    
+                    idInput.value = rowData.id;
+                    nameInput.value = rowData.name;
+                    vendorInput.value = rowData.vendor;
+                    densityInput.value = rowData.density;
+                    viscosityInput.value = rowData.viscosity;
+                    packagingInput.value = rowData.packaging;
+                    packSizeInput.value = rowData.size;
+                    unitInput.value = rowData.unit;
+                    quantityInput.value = rowData.quantity;
+                }
+            });
 
             tableRows.addEventListener('click', function (e) {
                 if (e.target.tagName === "TR" || e.target.tagName === "TD") {
@@ -125,25 +138,55 @@ document.addEventListener('DOMContentLoaded', ()=>{
             form.addEventListener("submit", (e) => {
                 e.preventDefault();
 
-                let newData = {
-                    "id": idInput.value,
-                    "name": nameInput.value,
-                    "vendor": vendorInput.value,
-                    "density": densityInput.value,
-                    "viscosity": viscosityInput.value,
-                    "packaging": packagingInput.value,
-                    "size": packSizeInput.value,
-                    "unit": unitInput.value,
-                    "quantity": quantityInput.value
-                };
+                let newData;
+                if (editingRowId && editingRowId.startsWith('fetched_')) {
+                    newData = {
+                        "id": idInput.value,
+                        "Chemical_name": nameInput.value, 
+                        "Vendor": vendorInput.value,
+                        "Density": densityInput.value,
+                        "Viscosity": viscosityInput.value,
+                        "Packaging": packagingInput.value,
+                        "Pack_size": packSizeInput.value,
+                        "Unit": unitInput.value,
+                        "Quantity": quantityInput.value
+                    };
+                } else {
+                    newData = {
+                        "id": idInput.value,
+                        "name": nameInput.value,
+                        "vendor": vendorInput.value,
+                        "density": densityInput.value,
+                        "viscosity": viscosityInput.value,
+                        "packaging": packagingInput.value,
+                        "size": packSizeInput.value,  
+                        "unit": unitInput.value,
+                        "quantity": quantityInput.value
+                    };
+                }
 
-                userData.push(newData);
-                localStorage.setItem('userData', JSON.stringify(userData)); 
-                alert('Data added successfully!'); 
+                if (editingRowId) {
+                    if (editingRowId.startsWith('fetched_')) {
+                        const index = parseInt(editingRowId.replace('fetched_', ''));
+                        fetchedData.splice(index, 1, newData); 
+                        localStorage.setItem('fetchedData', JSON.stringify(fetchedData)); 
+                    } else if (editingRowId.startsWith('user_')) {
+                        const index = parseInt(editingRowId.replace('user_', ''));
+                        userData.splice(index, 1, newData); 
+                        localStorage.setItem('userData', JSON.stringify(userData)); 
+                    }
+            
+                    alert('Data edited successfully!');
+            
+                    editingRowId = null; 
+                } else {
+                    userData.push(newData);
+                    localStorage.setItem('userData', JSON.stringify(userData)); 
+                    alert('Data added successfully!');
+                }
 
                 // displayData();
                 refreshData();
-
                 resetForm();
             });
 
@@ -159,36 +202,46 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 quantityInput.value = ""
             }
             
-            deleteButton.addEventListener('click', () => {
-                const selectedCheckboxes = document.querySelectorAll('.rowCheckbox:checked');
+            let deleteData = () => {
 
-                let rowsToDelete = []
+                deleteButton.addEventListener('click', () => {
+                    selectedCheckboxes = document.querySelectorAll('.rowCheckbox:checked'); 
 
-                selectedCheckboxes.forEach((checkbox) => {
-                    const row = checkbox.closest('tr');
-                    const rowId = row.getAttribute('data-id'); 
-
-                    if(rowId.startsWith('fetched_')){
-                        const index = parseInt(rowId.replace('fetched_', ''));
-                        console.log(index)
-                        fetchedData.splice(index, 1)
-                    } else if(rowId.startsWith('user_')){
-                        const index = parseInt(rowId.replace('user_', ''));
-                        console.log(index)
-                        userData.splice(index, 1);
+                    if (selectedCheckboxes.length === 0) {
+                        alert("Please select at least one row to delete.");
+                        return;
                     }
-                    rowsToDelete.push(row)
+    
+                    let rowsToDelete = []
+    
+                    selectedCheckboxes.forEach((checkbox) => {
+                        const row = checkbox.closest('tr');
+                        const rowId = row.getAttribute('data-id'); 
+    
+                        if(rowId.startsWith('fetched_')){
+                            const index = parseInt(rowId.replace('fetched_', ''));
+                            console.log(index)
+                            fetchedData.splice(index, 1)
+                        } else if(rowId.startsWith('user_')){
+                            const index = parseInt(rowId.replace('user_', ''));
+                            console.log(index)
+                            userData.splice(index, 1);
+                        }
+                        rowsToDelete.push(row)
+                    });
+    
+                    rowsToDelete.forEach(row => row.remove());
+    
+                    localStorage.setItem('fetchedData', JSON.stringify(fetchedData));
+                    localStorage.setItem('userData', JSON.stringify(userData));
+    
+                    alert('Data deleted successfully!'); 
+    
+                    refreshData();
                 });
+            }
 
-                rowsToDelete.forEach(row => row.remove());
-
-                localStorage.setItem('fetchedData', JSON.stringify(fetchedData));
-                localStorage.setItem('userData', JSON.stringify(userData));
-
-                alert('Data deleted successfully!'); 
-
-                refreshData();
-            });
+            deleteData();
 
             moveUpButton.addEventListener('click', function () {
                 moveRow("up");
