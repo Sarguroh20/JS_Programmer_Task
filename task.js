@@ -203,17 +203,22 @@ document.addEventListener('DOMContentLoaded', ()=>{
             }
             
             let deleteData = () => {
-
+                
                 deleteButton.addEventListener('click', () => {
                     selectedCheckboxes = document.querySelectorAll('.rowCheckbox:checked'); 
-
+                    
                     if (selectedCheckboxes.length === 0) {
                         alert("Please select at least one row to delete.");
                         return;
                     }
-    
+                    
                     let rowsToDelete = []
-    
+                    
+                    let confirmation = confirm("Are you sure you want to delete the selected rows?");
+                    if (!confirmation) {
+                        return; 
+                    }
+
                     selectedCheckboxes.forEach((checkbox) => {
                         const row = checkbox.closest('tr');
                         const rowId = row.getAttribute('data-id'); 

@@ -32,6 +32,14 @@ table{
 }
 
 @media (max-width: 650px) {
+    .toolbar{
+        flex-direction: column;
+    }
+
+    .icons {
+        margin: 1rem;
+    }
+
     table, thead, tbody, th, td, tr {
         display: block;
     }
@@ -89,6 +97,11 @@ table{
 }
 
 @media (max-width: 425px) {
+    .icons{
+        margin: 0;
+        padding-top: 1rem;
+    }
+
     td{
         gap: 3.5rem;
     }   
